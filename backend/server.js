@@ -15,7 +15,12 @@ const PORT = process.env.PORT || 3000;
 const BASE = '/api/v1';
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: [process.env.FRONT_END_URL || 'http://localhost:3001'],
+    credentials: true,
+  })
+);
 app.use(bodyParser.json());
 
 const seed = JSON.parse(fs.readFileSync(path.join(__dirname, 'seed.json')));
