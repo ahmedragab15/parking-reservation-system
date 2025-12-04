@@ -15,7 +15,29 @@ const PORT = process.env.PORT || 3000;
 const BASE = '/api/v1';
 
 const app = express();
-app.use(cors({ origin: "*" }));
+app.options(
+  "*",
+  cors({
+    origin: ["http://localhost:3001", "https://parking-reservation-system-6yps.vercel.app"],
+    credentials: true,
+  })
+);
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      const allowedOrigins = ["http://localhost:3001", "https://parking-reservation-system-6yps.vercel.app"];
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        return callback(new Error("Not allowed by CORS"), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(bodyParser.json());
 
 const seed = JSON.parse(fs.readFileSync(path.join(__dirname, 'seed.json')));
